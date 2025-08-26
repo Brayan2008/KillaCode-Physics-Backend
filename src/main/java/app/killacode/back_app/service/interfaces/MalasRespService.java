@@ -1,16 +1,18 @@
 package app.killacode.back_app.service.interfaces;
 
+import java.util.Map;
 import java.util.Optional;
 
-import app.killacode.back_app.dto.MalasRespuestasRequest;
+import app.killacode.back_app.dto.MalasRespuestasDTO;
+import app.killacode.back_app.dto.MalasRespuestasResponse;
 import app.killacode.back_app.model.MalasRespuestas;
 
 public interface MalasRespService {
-    Optional<MalasRespuestas> get(long id);
+    Optional<MalasRespuestasResponse> get(long id);
 
-    boolean create(Optional<MalasRespuestasRequest> obj);
+    Map<Boolean, Optional<MalasRespuestas>> create(Optional<MalasRespuestasDTO> obj);
 
-    boolean update(long id, Optional<MalasRespuestasRequest> obj);
+    boolean update(long id, Optional<MalasRespuestasDTO> obj);
 
     boolean delete(long id);
 }

@@ -3,9 +3,11 @@ package app.killacode.back_app.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import app.killacode.back_app.dto.EjercicioRequest;
 import app.killacode.back_app.model.Ejercicio;
 import app.killacode.back_app.service.interfaces.EjercicioService;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +34,14 @@ public class EjercicioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}/malas")
-    public ResponseEntity<?> getMalas(@PathVariable String id) {
-        return ejercicioService.getMalas(id).isPresent()
-                ? ResponseEntity.ok(ejercicioService.getMalas(id))
-                : ResponseEntity.notFound().build();
-    }
-
     @PostMapping("/crear")
-    public ResponseEntity<?> postEjercicio(@RequestBody Ejercicio ejercicio) {
-        if (ejercicioService.create(Optional.of(ejercicio))) {
+    public ResponseEntity<?> postEjercicio(@RequestBody EjercicioRequest ejercicio) {
+        Map<Boolean, Optional<Ejercicio>> createdEjercicioMap = ejercicioService.create(Optional.of(ejercicio));
+        if (createdEjercicioMap.containsKey(true)) {
 
             var uri = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(ejercicio.getId_ejercicio())
+                    .buildAndExpand(createdEjercicioMap.get(true).get().getId_ejercicio())
                     .toUri();
 
             return ResponseEntity.created(uri).build();
@@ -54,7 +50,7 @@ public class EjercicioController {
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<?> updateEjercicio(@PathVariable String id, @RequestBody Ejercicio ejercicio) {
+    public ResponseEntity<?> updateEjercicio(@PathVariable String id, @RequestBody EjercicioRequest ejercicio) {
         return ejercicioService.update(id, Optional.of(ejercicio))
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.notFound().build();

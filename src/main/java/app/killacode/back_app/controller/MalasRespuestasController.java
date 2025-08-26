@@ -4,9 +4,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import app.killacode.back_app.dto.MalasRespuestasRequest;
+import app.killacode.back_app.dto.MalasRespuestasDTO;
+import app.killacode.back_app.model.MalasRespuestas;
 import app.killacode.back_app.service.interfaces.MalasRespService;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,23 +35,24 @@ public class MalasRespuestasController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody MalasRespuestasRequest malas) {
-        if (malasService.create(Optional.of(malas))) {
-
+    public ResponseEntity<?> create(@RequestBody MalasRespuestasDTO malas) {
+        Map<Boolean, Optional<MalasRespuestas>> responseMap = malasService.create(Optional.of(malas));
+       
+        if (responseMap.containsKey(true)) {
             var uri = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(malas.id()) // ajustar si el DTO usa otro nombre para el id
+                    .buildAndExpand(responseMap.get(true).get().getId_mal())
                     .toUri();
 
             return ResponseEntity.created(uri).build();
         }
+       
         return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable long id, @RequestBody MalasRespuestasRequest malas) {
-        boolean updated = malasService.update(id, Optional.of(malas));
-        if (updated) {
+    public ResponseEntity<?> update(@PathVariable long id, @RequestBody MalasRespuestasDTO malas) {
+        if (malasService.update(id, Optional.of(malas))) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
