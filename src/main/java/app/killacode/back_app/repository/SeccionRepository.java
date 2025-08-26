@@ -1,0 +1,7 @@
+package app.killacode.back_app.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import app.killacode.back_app.model.Seccion;
+
+public interface SeccionRepository extends JpaRepository<Seccion, String>{}
