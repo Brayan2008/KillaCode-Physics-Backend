@@ -1,3 +1,9 @@
+/environment/  
+/target/
+.vscode/
+.mvn/
+
+
 # Compiled class file
 *.class
 
