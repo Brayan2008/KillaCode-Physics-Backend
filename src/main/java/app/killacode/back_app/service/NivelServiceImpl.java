@@ -17,7 +17,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class NivelServiceImpl implements NivelService{
+public class NivelServiceImpl implements NivelService {
 
     @Autowired
     private NivelRepository nivelRepo;
@@ -33,17 +33,16 @@ public class NivelServiceImpl implements NivelService{
 
     @Override
     public Optional<NivelResponse> get(String id) {
-        return nivelRepo.findById(id).map(NivelResponse::convertirNivel);   
+        return nivelRepo.findById(id).map(NivelResponse::convertirNivel);
     }
 
     @Override
     public Map<Boolean, Optional<NivelResponse>> create(Optional<NivelRequest> obj) {
-        if (obj.isPresent() && nivelRepo.existsById(obj.get().id_nivel())) {
-            
-            var nivel = obj.get().convertirToNivel();
-            ejercicioRepository.findById(obj.get().ejercicio()).ifPresent(nivel::setEjercicio);
-            teoriaRepo.findById(obj.get().teoria()).ifPresent(nivel::setTeoria);
-            temaRepository.findById(obj.get().tema()).ifPresent(nivel::setTema);
+        if (obj.isPresent() && !nivelRepo.existsById(obj.get().id_nivel())) {
+            var nivelObtenido = obj.get();
+            var nivel = nivelObtenido.convertirToNivel();
+
+            setRelatedEntities(nivelObtenido, nivel);
 
             return Map.of(true, Optional.of(NivelResponse.convertirNivel(nivelRepo.save(nivel))));
         }
@@ -53,11 +52,12 @@ public class NivelServiceImpl implements NivelService{
     @Override
     public boolean update(String id, Optional<NivelRequest> obj) {
         if (obj.isPresent() && nivelRepo.existsById(id)) {
-            var nivel = obj.get().convertirToNivel();
+            var nivelObtenido = obj.get();
+            var nivel = nivelObtenido.convertirToNivel();
             nivel.setId_nivel(id);
-            ejercicioRepository.findById(obj.get().ejercicio()).ifPresent(nivel::setEjercicio);
-            teoriaRepo.findById(obj.get().teoria()).ifPresent(nivel::setTeoria);
-            temaRepository.findById(obj.get().tema()).ifPresent(nivel::setTema);
+
+            setRelatedEntities(nivelObtenido, nivel);
+
             nivelRepo.save(nivel);
             return true;
         }
@@ -73,4 +73,16 @@ public class NivelServiceImpl implements NivelService{
         return false;
     }
 
+     // Método privado para simplificar la asignación de entidades relacionadas
+    private void setRelatedEntities(NivelRequest nivelObtenido, app.killacode.back_app.model.Nivel nivel) {
+        if (nivelObtenido.ejercicio() != null) {
+            ejercicioRepository.findById(nivelObtenido.ejercicio()).ifPresent(nivel::setEjercicio);
+        }
+        if (nivelObtenido.teoria() != null) {
+            teoriaRepo.findById(nivelObtenido.teoria()).ifPresent(nivel::setTeoria);
+        }
+        if (nivelObtenido.tema() != null) {
+            temaRepository.findById(nivelObtenido.tema()).ifPresent(nivel::setTema);
+        }
+    }
 }
