@@ -3,11 +3,9 @@ package app.killacode.back_app.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import app.killacode.back_app.dto.TemaRequest;
-import app.killacode.back_app.model.Tema;
-import app.killacode.back_app.service.interfaces.TemaService;
+import app.killacode.back_app.dto.UsuarioRequest;
+import app.killacode.back_app.service.UsuarioServiceImpl;
 
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,44 +19,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
-@RequestMapping("/tema")
-public class TemaController {
+@RequestMapping("/usuario")
+public class UsuarioController {
 
     @Autowired
-    private TemaService temaService;
+    private UsuarioServiceImpl usuarioService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTema(@PathVariable String id) {
-        return temaService.get(id)
+    public ResponseEntity<?> getUsuario(@PathVariable long id) {
+        return usuarioService.get(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> postTema(@RequestBody TemaRequest tema) {
-        Map<Boolean, Optional<Tema>> createdTemaMap = temaService.create(Optional.of(tema));
-        if (createdTemaMap.containsKey(true)) {
-
+    public ResponseEntity<?> postUsuario(@RequestBody UsuarioRequest usuario) {
+        var created = usuarioService.create(Optional.of(usuario));
+        if (created.isPresent()) {
             var uri = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(createdTemaMap.get(true).get().getId_tema())
+                    .buildAndExpand(created.get().id())
                     .toUri();
-
             return ResponseEntity.created(uri).build();
         }
         return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<?> updateTema(@PathVariable String id, @RequestBody TemaRequest tema) {
-        return temaService.update(id, Optional.of(tema))
+    public ResponseEntity<?> updateUsuario(@PathVariable long id, @RequestBody UsuarioRequest usuario) {
+        return usuarioService.update(id, Optional.of(usuario))
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTema(@PathVariable String id) {
-        return temaService.delete(id)
+    public ResponseEntity<?> deleteUsuario(@PathVariable long id) {
+        return usuarioService.delete(id)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }

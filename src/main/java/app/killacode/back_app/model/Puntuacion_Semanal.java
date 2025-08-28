@@ -10,17 +10,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Puntuacion_Semanal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id_puntacion; 
+    private Long id_puntacion; 
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true)
+    @Column
     private Dias dias;
 
     @Column
@@ -29,14 +35,4 @@ public class Puntuacion_Semanal {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario id_usuario;
-}
-
-enum Dias {
-    DOMINGO,
-    LUNES,
-    MARTES,
-    MIERCOLES,
-    JUEVES,
-    VIERNES,
-    SABADO
 }
