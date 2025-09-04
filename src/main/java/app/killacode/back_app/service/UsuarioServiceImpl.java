@@ -11,6 +11,7 @@ import app.killacode.back_app.model.Dias;
 import app.killacode.back_app.model.Puntuacion_Semanal;
 import app.killacode.back_app.model.Usuario;
 import app.killacode.back_app.repository.PuntacionRepository;
+import app.killacode.back_app.repository.TemaRepository;
 import app.killacode.back_app.repository.UsuarioRepository;
 import app.killacode.back_app.service.interfaces.UsuarioService;
 import jakarta.transaction.Transactional;
@@ -25,6 +26,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private PuntacionRepository puntuacionRepo;
 
+    @Autowired
+    private TemaRepository temaRepo;
+    
     @Override
     public Optional<UsuarioResponse> get(long id) {
         return usuarioRepository.findById(id).map(UsuarioResponse::fromUsuario);
@@ -60,6 +64,17 @@ public class UsuarioServiceImpl implements UsuarioService {
             // password puede ser null, pero si viene lo actualizamos
             if (req.get().password() != null)
                 u.setPassword(req.get().password());
+            usuarioRepository.save(u);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean asignarTema(long id, String temaId) {
+        if (usuarioRepository.existsById(id) && temaRepo.existsById(temaId)) {
+            Usuario u = usuarioRepository.findById(id).get();
+            u.getTemas().add(temaRepo.findById(temaId).get());
             usuarioRepository.save(u);
             return true;
         }

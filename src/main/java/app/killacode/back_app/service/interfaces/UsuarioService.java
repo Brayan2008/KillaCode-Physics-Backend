@@ -13,6 +13,8 @@ public interface UsuarioService {
 
 	boolean update(long id, Optional<UsuarioRequest> obj);
 
+	boolean asignarTema(long id, String temaId);
+
 	boolean delete(long id);
 
 }

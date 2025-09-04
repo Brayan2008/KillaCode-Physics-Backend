@@ -52,6 +52,14 @@ public class UsuarioController {
                 : ResponseEntity.notFound().build();
     }
 
+    @PostMapping("/{id}/asignarTema/{temaId}")
+    public ResponseEntity<?> asignarTema(@PathVariable long id, @PathVariable String temaId) {
+        return usuarioService.asignarTema(id, temaId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
+    }
+    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUsuario(@PathVariable long id) {
         return usuarioService.delete(id)

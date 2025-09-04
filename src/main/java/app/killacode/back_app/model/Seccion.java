@@ -32,6 +32,9 @@ public class Seccion {
     private String footer;
 
     @Column
+    private Integer posicion;
+
+    @Column
     private String image;
 
     @ManyToOne
