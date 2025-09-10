@@ -1,21 +1,18 @@
 package app.killacode.back_app.dto;
 
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import java.util.List;
 
 import app.killacode.back_app.model.Teoria;
 
-public record TeoriaResponse(String id, String title, String secciones) {
+public record TeoriaResponse(String id, String title, List<SeccionResponse> secciones) {
 
     public static TeoriaResponse conversionTeoria(Teoria teoria) {
-        String baseUri = ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .build()
-                        .toUriString();
-        String seccionesUrl = baseUri + "/teoria/" + teoria.getId_teoria() + "/secciones";
-        
+        List<SeccionResponse> seccionesResponse = teoria.getSecciones().stream()
+                .map(SeccionResponse::fromSeccion)
+                .toList();
         return new TeoriaResponse(teoria.getId_teoria(),
-                      teoria.getTitulo(),
-                      seccionesUrl);
+                teoria.getTitulo(),
+                seccionesResponse);
     }
 
 }

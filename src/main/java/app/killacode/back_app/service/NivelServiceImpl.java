@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 
 import app.killacode.back_app.dto.NivelRequest;
 import app.killacode.back_app.dto.NivelResponse;
-import app.killacode.back_app.repository.EjercicioRepository;
+import app.killacode.back_app.model.Nivel;
 import app.killacode.back_app.repository.NivelRepository;
+import app.killacode.back_app.repository.PracticaRepository;
 import app.killacode.back_app.repository.TemaRepository;
 import app.killacode.back_app.repository.TeoriaRepository;
 import app.killacode.back_app.service.interfaces.NivelService;
@@ -23,7 +24,7 @@ public class NivelServiceImpl implements NivelService {
     private NivelRepository nivelRepo;
 
     @Autowired
-    private EjercicioRepository ejercicioRepository;
+    private PracticaRepository practicaRepository;
 
     @Autowired
     private TeoriaRepository teoriaRepo;
@@ -74,9 +75,9 @@ public class NivelServiceImpl implements NivelService {
     }
 
      // Método privado para simplificar la asignación de entidades relacionadas
-    private void setRelatedEntities(NivelRequest nivelObtenido, app.killacode.back_app.model.Nivel nivel) {
-        if (nivelObtenido.ejercicio() != null) {
-            ejercicioRepository.findById(nivelObtenido.ejercicio()).ifPresent(nivel::setEjercicio);
+    private void setRelatedEntities(NivelRequest nivelObtenido, Nivel nivel) {
+        if (nivelObtenido.practica() != null) {
+            practicaRepository.findById(nivelObtenido.practica()).ifPresent(nivel::setPractica);
         }
         if (nivelObtenido.teoria() != null) {
             teoriaRepo.findById(nivelObtenido.teoria()).ifPresent(nivel::setTeoria);

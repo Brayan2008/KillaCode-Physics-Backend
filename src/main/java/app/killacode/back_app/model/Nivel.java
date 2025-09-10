@@ -25,8 +25,8 @@ public class Nivel {
     private boolean tipo;
     
     @OneToOne //Unidireccionales porque solo se puede acceder desde el nivel y no al reves (por ahora)
-    @JoinColumn(name = "id_ejercicio")
-    private Ejercicio ejercicio;
+    @JoinColumn(name = "id_practica")
+    private Practica practica;
     
     @OneToOne
     @JoinColumn(name = "id_teoria")

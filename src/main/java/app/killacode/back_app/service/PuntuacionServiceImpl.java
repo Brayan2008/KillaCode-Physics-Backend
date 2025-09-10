@@ -38,7 +38,6 @@ public class PuntuacionServiceImpl implements PuntuacionService {
 
         if (req.isPresent()) {
             PuntuacionRequest puntuacionRequest = req.get();
-            if(id_user instanceof Long) System.out.println();
             int updatedRows = puntacionRepository.updatePuntos(userById.get(), puntuacionRequest.dia(),
                     puntuacionRequest.puntos());
             return updatedRows == 1; // Devuelve verdadero si se actualizó exactamente una fila
