@@ -1,0 +1,7 @@
+.vscode/
+.mvn/
+/environment/
+/target/
+.gitignore
+.gitattributes
+HELP.md

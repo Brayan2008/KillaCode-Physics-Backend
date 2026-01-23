@@ -1,0 +1,23 @@
+services:
+  phyapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:80"
+    env_file:
+      - ./environment/conector.env
+    depends_on:
+      - mydb
+    volumes:
+      - .:/app
+    command: mvn spring-boot:run
+  mydb:
+    image: postgres:18
+    env_file:
+      - ./environment/postgresDocker.env
+    volumes:
+      - data-dev:/var/lib/postgresql
+volumes:
+  data-dev:
+    name: data-dev

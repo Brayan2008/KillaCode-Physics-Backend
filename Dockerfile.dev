@@ -1,0 +1,12 @@
+# ======== Compilacion ============
+FROM maven:3.9.12-eclipse-temurin-21 AS build
+# La direccion por default es /app (si no existe Docker la crea)
+WORKDIR /app
+# Crear carpeta para el repo de Maven
+RUN mkdir -p /app/.m2
+# Decirle a Maven que use esa carpeta
+ENV MAVEN_OPTS="-Dmaven.repo.local=/app/.m2"
+# Copiamos el pom al /app
+COPY pom.xml .
+# Ejecutamos esto
+RUN mvn dependency:go-offline
