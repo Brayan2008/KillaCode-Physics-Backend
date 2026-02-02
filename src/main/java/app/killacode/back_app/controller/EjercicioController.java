@@ -4,8 +4,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import app.killacode.back_app.dto.EjercicioRequest;
+import app.killacode.back_app.dto.EjercicioResponse;
 import app.killacode.back_app.model.Ejercicio;
 import app.killacode.back_app.service.interfaces.EjercicioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Map;
 import java.util.Optional;
@@ -20,13 +26,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Tag(name = "Ejercicios", description = "Operaciones CRUD para los ejercicios")
 @RestController
 @RequestMapping("/ejercicio")
+@ApiResponse(responseCode = "404", description = "Ejercicio no encontrado", content = @Content)
 public class EjercicioController {
 
     @Autowired
     private EjercicioService ejercicioService;
 
+    @Operation(summary = "Obtener un ejercicio por su ID", description = "Devuelve un ejercicio específico utilizando su **ID único**.")
+    @ApiResponse(responseCode = "200", description = "Ejercicio encontrado.", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = EjercicioResponse.class))
+    })
     @GetMapping("/{id}")
     public ResponseEntity<?> getEjercicio(@PathVariable String id) {
         return ejercicioService.get(id)
@@ -34,6 +46,10 @@ public class EjercicioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Crear un nuevo ejercicio", description = "Crea un nuevo ejercicio con los datos proporcionados.")
+    @ApiResponse(responseCode = "201", description = "Ejercicio creado exitosamente.", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Error en el formato del ejercicio.", content = @Content)
+    @ApiResponse(responseCode = "500", description = "Error del servidor al procesar la petición.", content = @Content)
     @PostMapping("/crear")
     public ResponseEntity<?> postEjercicio(@RequestBody EjercicioRequest ejercicio) {
         Map<Boolean, Optional<Ejercicio>> createdEjercicioMap = ejercicioService.create(Optional.of(ejercicio));
@@ -49,6 +65,8 @@ public class EjercicioController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Actualizar un ejercicio existente por su ID", description = "Actualiza los datos de un ejercicio existente utilizando su *ID*.")
+    @ApiResponse(responseCode = "200", description = "Ejercicio actualizado exitosamente.", content = @Content)
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> updateEjercicio(@PathVariable String id, @RequestBody EjercicioRequest ejercicio) {
         return ejercicioService.update(id, Optional.of(ejercicio))
@@ -56,6 +74,10 @@ public class EjercicioController {
                 : ResponseEntity.notFound().build();
     }
 
+    // TODO revisar que se puedan eliminar ejercicios que esten relacionados con
+    // otros (REVISAR)
+    @Operation(summary = "Elimina un ejercicio por su ID", description = "Elimina un ejercicio *que no este relacionado* (revisar) ")
+    @ApiResponse(responseCode = "204", description = "Ejercicio eliminado exitosamente.", content = @Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEjercicio(@PathVariable String id) {
         return ejercicioService.delete(id)

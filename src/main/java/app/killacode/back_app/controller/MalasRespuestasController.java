@@ -20,6 +20,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "MalasRespuestas", description = "Operaciones CRUD para respuestas incorrectas")
+@ApiResponse(responseCode = "404", description = "Recurso no encontrado", content = @Content)
 @RestController
 @RequestMapping("/malas")
 public class MalasRespuestasController {
@@ -27,6 +34,8 @@ public class MalasRespuestasController {
     @Autowired
     private MalasRespService malasService;
 
+    @Operation(summary = "Obtener malas respuestas por ID", description = "Devuelve las malas respuestas asociadas a un ejercicio por su ID")
+    @ApiResponse(responseCode = "200", description = "Malas respuestas encontradas", content = @Content)
     @GetMapping("/{id}")
     public ResponseEntity<?> getMalas(@PathVariable long id) {
         return malasService.get(id)
@@ -34,6 +43,9 @@ public class MalasRespuestasController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Crear malas respuestas", description = "Crea las respuestas incorrectas asociadas a un ejercicio")
+    @ApiResponse(responseCode = "201", description = "Malas respuestas creadas", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Error en el formato de las malas respuestas", content = @Content)
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody MalasRespuestasDTO malas) {
         Map<Boolean, Optional<MalasRespuestas>> responseMap = malasService.create(Optional.of(malas));
@@ -50,6 +62,8 @@ public class MalasRespuestasController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Actualizar malas respuestas", description = "Actualiza las respuestas incorrectas por su ID")
+    @ApiResponse(responseCode = "200", description = "Malas respuestas actualizadas", content = @Content)
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable long id, @RequestBody MalasRespuestasDTO malas) {
         if (malasService.update(id, Optional.of(malas))) {
@@ -58,6 +72,8 @@ public class MalasRespuestasController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Eliminar malas respuestas", description = "Elimina las malas respuestas por su ID")
+    @ApiResponse(responseCode = "204", description = "Malas respuestas eliminadas", content = @Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) {
         boolean deleted = malasService.delete(id);

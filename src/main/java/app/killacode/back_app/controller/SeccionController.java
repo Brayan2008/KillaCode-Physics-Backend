@@ -18,7 +18,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Secciones", description = "Operaciones CRUD para las secciones")
+@ApiResponse(responseCode = "404", description = "Sección no encontrada", content = @Content)
 @RestController
 @RequestMapping("/seccion")
 public class SeccionController {
@@ -26,6 +32,8 @@ public class SeccionController {
     @Autowired
     private SeccionService seccionService;
 
+    @Operation(summary = "Obtener una sección por ID", description = "Devuelve una sección específica por su ID")
+    @ApiResponse(responseCode = "200", description = "Sección encontrada", content = @Content)
     @GetMapping("/{id}")
     public ResponseEntity<?> getSeccion(@PathVariable String id) {
         return seccionService.get(id)
@@ -33,6 +41,9 @@ public class SeccionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Crear una sección", description = "Crea una nueva sección con los datos proporcionados")
+    @ApiResponse(responseCode = "201", description = "Sección creada", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Error en el formato de la sección", content = @Content)
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody SeccionRequest seccion) {
         if (seccionService.create(Optional.of(seccion))) {
@@ -47,6 +58,8 @@ public class SeccionController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Actualizar una sección", description = "Actualiza los datos de una sección existente por su ID")
+    @ApiResponse(responseCode = "200", description = "Sección actualizada", content = @Content)
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody SeccionRequest seccion) {
         boolean updated = seccionService.update(id, Optional.of(seccion));
@@ -56,6 +69,8 @@ public class SeccionController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Eliminar una sección", description = "Elimina una sección por su ID")
+    @ApiResponse(responseCode = "204", description = "Sección eliminada", content = @Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         boolean deleted = seccionService.delete(id);

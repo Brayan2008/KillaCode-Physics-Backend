@@ -1,8 +1,15 @@
 package app.killacode.back_app.dto;
 
 import app.killacode.back_app.model.MalasRespuestas;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-public record MalasRespuestasDTO(String mal, String id_ejercicio) {
+public record MalasRespuestasDTO(
+
+        @Schema(description = "ID único de la mala respuesta", example = "mal1") String mal,
+
+        @Schema(description = "ID del ejercicio relacionado con la mala respuesta", example = "ej01") String id_ejercicio
+
+) {
 
     // Salida GET
     public static MalasRespuestasResponse conversionMalas(MalasRespuestas malas) {

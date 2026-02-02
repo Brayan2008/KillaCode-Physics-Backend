@@ -18,6 +18,10 @@ services:
       - ./environment/postgresDocker.env
     volumes:
       - data-dev:/var/lib/postgresql
+  # Exponemos el puerto de postgres solo para verlo desde un SGBD
+    ports:
+      - "5432:5432"
+  
 volumes:
   data-dev:
     name: data-dev

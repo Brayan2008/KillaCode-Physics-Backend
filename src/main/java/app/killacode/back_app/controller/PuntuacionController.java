@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Puntuaciones", description = "Operaciones sobre las puntuaciones de usuarios")
+@ApiResponse(responseCode = "404", description = "Recurso no encontrado", content = @Content)
 @RestController
 @RequestMapping("/puntuaciones")
 public class PuntuacionController {
@@ -23,6 +30,8 @@ public class PuntuacionController {
     @Autowired
     private PuntuacionService puntuacionService;
 
+    @Operation(summary = "Obtener puntuaciones por usuario", description = "Devuelve las puntuaciones asociadas a un usuario por su ID")
+    @ApiResponse(responseCode = "200", description = "Puntuaciones encontradas", content = @Content)
     @GetMapping("/usuario/{id}")
     public ResponseEntity<?> getByUsuario(@PathVariable long id) {
         return puntuacionService.findByUsuario(id).isPresent()
@@ -30,6 +39,8 @@ public class PuntuacionController {
                 : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Actualizar una puntuación", description = "Actualiza una puntuación existente por su ID")
+    @ApiResponse(responseCode = "200", description = "Puntuación actualizada", content = @Content)
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> updatePuntuacion(@PathVariable long id, @RequestBody PuntuacionRequest puntuacion) {
         return puntuacionService.update(id, Optional.of(puntuacion))
@@ -37,6 +48,8 @@ public class PuntuacionController {
                 : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Eliminar una puntuación", description = "Elimina una puntuación por su ID")
+    @ApiResponse(responseCode = "204", description = "Puntuación eliminada", content = @Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePuntuacion(@PathVariable Long id) {
         return puntuacionService.delete(id)

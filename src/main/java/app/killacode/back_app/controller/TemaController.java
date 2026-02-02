@@ -20,6 +20,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Temas", description = "Operaciones CRUD para los temas")
+@ApiResponse(responseCode = "404", description = "Tema no encontrado", content = @Content)
 @RestController
 @RequestMapping("/tema")
 public class TemaController {
@@ -27,6 +34,8 @@ public class TemaController {
     @Autowired
     private TemaService temaService;
 
+    @Operation(summary = "Obtener un tema por su ID", description = "Devuelve un tema específico utilizando su ID")
+    @ApiResponse(responseCode = "200", description = "Tema encontrado", content = @Content)
     @GetMapping("/{id}")
     public ResponseEntity<?> getTema(@PathVariable String id) {
         return temaService.get(id)
@@ -34,6 +43,9 @@ public class TemaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Crear un nuevo tema", description = "Crea un nuevo tema con los datos proporcionados")
+    @ApiResponse(responseCode = "201", description = "Tema creado exitosamente", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Error en el formato del tema", content = @Content)
     @PostMapping("/crear")
     public ResponseEntity<?> postTema(@RequestBody TemaRequest tema) {
         Map<Boolean, Optional<Tema>> createdTemaMap = temaService.create(Optional.of(tema));
@@ -49,6 +61,8 @@ public class TemaController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Actualizar un tema", description = "Actualiza un tema existente por su ID")
+    @ApiResponse(responseCode = "200", description = "Tema actualizado exitosamente", content = @Content)
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> updateTema(@PathVariable String id, @RequestBody TemaRequest tema) {
         return temaService.update(id, Optional.of(tema))
@@ -56,6 +70,8 @@ public class TemaController {
                 : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Eliminar un tema", description = "Elimina un tema por su ID")
+    @ApiResponse(responseCode = "204", description = "Tema eliminado exitosamente", content = @Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTema(@PathVariable String id) {
         return temaService.delete(id)

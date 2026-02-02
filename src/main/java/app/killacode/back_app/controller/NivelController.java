@@ -19,6 +19,13 @@ import app.killacode.back_app.dto.NivelRequest;
 import app.killacode.back_app.dto.NivelResponse;
 import app.killacode.back_app.service.interfaces.NivelService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Niveles", description = "Operaciones CRUD para los niveles")
+@ApiResponse(responseCode = "404", description = "Nivel no encontrado", content = @Content)
 @RestController
 @RequestMapping("/nivel")
 public class NivelController {
@@ -26,6 +33,8 @@ public class NivelController {
     @Autowired
     private NivelService nivelService;
 
+    @Operation(summary = "Obtener un nivel por su ID", description = "Devuelve un nivel específico por su ID")
+    @ApiResponse(responseCode = "200", description = "Nivel encontrado", content = @Content)
     @GetMapping("/{id}")
     public ResponseEntity<NivelResponse> getNivel(@PathVariable String id) {
         return nivelService.get(id)
@@ -33,6 +42,9 @@ public class NivelController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Crear un nuevo nivel", description = "Crea un nuevo nivel con los datos proporcionados")
+    @ApiResponse(responseCode = "201", description = "Nivel creado", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Error en el formato del nivel", content = @Content)
     @PostMapping
     public ResponseEntity<NivelResponse> createNivel(@RequestBody NivelRequest nivelRequest) {
         Map<Boolean, Optional<NivelResponse>> createdNivelMap = nivelService.create(Optional.of(nivelRequest));
@@ -48,6 +60,8 @@ public class NivelController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Operation(summary = "Actualizar un nivel", description = "Actualiza un nivel existente por su ID")
+    @ApiResponse(responseCode = "204", description = "Nivel actualizado", content = @Content)
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateNivel(@PathVariable String id, @RequestBody NivelRequest nivelRequest) {
         return nivelService.update(id, Optional.of(nivelRequest))
@@ -55,6 +69,8 @@ public class NivelController {
                 : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Eliminar un nivel", description = "Elimina un nivel por su ID")
+    @ApiResponse(responseCode = "204", description = "Nivel eliminado", content = @Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNivel(@PathVariable String id) {
         return nivelService.delete(id)

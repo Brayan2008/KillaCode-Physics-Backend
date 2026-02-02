@@ -3,7 +3,8 @@
 /target/classes/
 .vscode/
 .mvn/
-
+.m2/
+Peticiones-HTTP-Cartero/
 
 # Compiled class file
 *.class
