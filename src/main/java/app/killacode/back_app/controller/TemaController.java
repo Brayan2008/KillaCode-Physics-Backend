@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import app.killacode.back_app.dto.TemaRequest;
+import app.killacode.back_app.dto.TemaResponse;
 import app.killacode.back_app.model.Tema;
 import app.killacode.back_app.service.interfaces.TemaService;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Temas", description = "Operaciones CRUD para los temas")
@@ -35,7 +37,7 @@ public class TemaController {
     private TemaService temaService;
 
     @Operation(summary = "Obtener un tema por su ID", description = "Devuelve un tema específico utilizando su ID")
-    @ApiResponse(responseCode = "200", description = "Tema encontrado", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Tema encontrado", content = @Content(schema = @Schema(implementation = TemaResponse.class)))
     @GetMapping("/{id}")
     public ResponseEntity<?> getTema(@PathVariable String id) {
         return temaService.get(id)

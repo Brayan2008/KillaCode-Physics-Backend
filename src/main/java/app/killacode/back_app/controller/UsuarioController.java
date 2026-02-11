@@ -3,7 +3,7 @@ package app.killacode.back_app.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import app.killacode.back_app.dto.UsuarioRequest;
+import app.killacode.back_app.dto.UsuarioDTORequest.*;
 import app.killacode.back_app.dto.UsuarioResponse;
 import app.killacode.back_app.service.UsuarioServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import java.util.Optional;
 
@@ -48,10 +49,11 @@ public class UsuarioController {
     @ApiResponse(responseCode = "400", description = "Error con el formato JSON del usuario a registrar.", content = @Content)
     @ApiResponse(responseCode = "500", description = "Error del servidor al procesar la petición.", content = @Content)
     @PostMapping("/crear")
-    public ResponseEntity<?> postUsuario(@RequestBody UsuarioRequest usuario) {
+    public ResponseEntity<?> postUsuario(@Valid @RequestBody UsuarioRequest usuario) {
         var created = usuarioService.create(Optional.of(usuario));
         if (created.isPresent()) {
-            var uri = ServletUriComponentsBuilder.fromCurrentRequest()
+            var uri = ServletUriComponentsBuilder.fromCurrentRequest() // TODO arreglar el error, debe referenciar al
+                                                                       // GET request de usuarios
                     .path("/{id}")
                     .buildAndExpand(created.get().id())
                     .toUri();
@@ -62,9 +64,10 @@ public class UsuarioController {
 
     @Operation(summary = "Actualizar un usuario registrado", description = "Actualiza los datos del usuario existente utilizando su *ID*. Solo se puede cambiar la contraseña, el nombre y el correo")
     @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente.", content = @Content)
+    @ApiResponse(responseCode = "400", description = "Error con el formato JSON del usuario a actualizar.", content = @Content)
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<?> updateUsuario(@PathVariable long id, @RequestBody UsuarioRequest usuario) {
+    public ResponseEntity<?> updateUsuario(@PathVariable long id, @Valid @RequestBody UsuarioUpdateRequest usuario) {
         return usuarioService.update(id, Optional.of(usuario))
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.notFound().build();

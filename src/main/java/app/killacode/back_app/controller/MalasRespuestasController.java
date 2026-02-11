@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import app.killacode.back_app.dto.MalasRespuestasDTO;
+import app.killacode.back_app.dto.MalasRespuestasResponse;
 import app.killacode.back_app.model.MalasRespuestas;
 import app.killacode.back_app.service.interfaces.MalasRespService;
 
@@ -35,9 +36,9 @@ public class MalasRespuestasController {
     private MalasRespService malasService;
 
     @Operation(summary = "Obtener malas respuestas por ID", description = "Devuelve las malas respuestas asociadas a un ejercicio por su ID")
-    @ApiResponse(responseCode = "200", description = "Malas respuestas encontradas", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Malas respuestas encontradas")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMalas(@PathVariable long id) {
+    public ResponseEntity<MalasRespuestasResponse> getMalas(@PathVariable long id) {
         return malasService.get(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

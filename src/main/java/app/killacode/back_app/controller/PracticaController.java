@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Prácticas", description = "Operaciones relacionadas con prácticas y sus ejercicios")
@@ -36,7 +38,7 @@ public class PracticaController {
 
     @GetMapping("/{id}/ejercicios")
     @Operation(summary = "Obtener ejercicios de una práctica", description = "Devuelve la lista de ejercicios asociados a una práctica por su ID")
-    @ApiResponse(responseCode = "200", description = "Lista de ejercicios encontrada", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Lista de ejercicios encontrada", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EjercicioResponse.class))))
     public ResponseEntity<List<EjercicioResponse>> getEjercicios(@PathVariable String id) {
             if (ejercicioService.getEjercicios(id).isPresent()) {
                 return ResponseEntity.ok(ejercicioService.getEjercicios(id).get());

@@ -3,7 +3,7 @@ package app.killacode.back_app.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import app.killacode.back_app.dto.EjercicioRequest;
+import app.killacode.back_app.dto.EjercicioDTO.*;
 import app.killacode.back_app.dto.EjercicioResponse;
 import app.killacode.back_app.model.Ejercicio;
 import app.killacode.back_app.service.interfaces.EjercicioService;
@@ -54,7 +54,6 @@ public class EjercicioController {
     public ResponseEntity<?> postEjercicio(@RequestBody EjercicioRequest ejercicio) {
         Map<Boolean, Optional<Ejercicio>> createdEjercicioMap = ejercicioService.create(Optional.of(ejercicio));
         if (createdEjercicioMap.containsKey(true)) {
-
             var uri = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
                     .buildAndExpand(createdEjercicioMap.get(true).get().getId_ejercicio())
@@ -66,17 +65,22 @@ public class EjercicioController {
     }
 
     @Operation(summary = "Actualizar un ejercicio existente por su ID", description = "Actualiza los datos de un ejercicio existente utilizando su *ID*.")
+    @ApiResponse(responseCode = "400", description = "Error en el formato del ejercicio.", content = @Content)
     @ApiResponse(responseCode = "200", description = "Ejercicio actualizado exitosamente.", content = @Content)
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<?> updateEjercicio(@PathVariable String id, @RequestBody EjercicioRequest ejercicio) {
-        return ejercicioService.update(id, Optional.of(ejercicio))
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateEjercicio(@PathVariable String id, @RequestBody EjercicioUpdateRequest ejercicio) {
+        try {
+            return ejercicioService.update(id, Optional.of(ejercicio))
+                    ? ResponseEntity.ok().build()
+                    : ResponseEntity.notFound().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     // TODO revisar que se puedan eliminar ejercicios que esten relacionados con
     // otros (REVISAR)
-    @Operation(summary = "Elimina un ejercicio por su ID", description = "Elimina un ejercicio *que no este relacionado* (revisar) ")
+    @Operation(summary = "Elimina un ejercicio por su ID", description = "Elimina un ejercicio, eliminando tambien las malas respuestas, en cuanto a la practica relacionada, solo se elimina la relacion, pero no la practica en si.")
     @ApiResponse(responseCode = "204", description = "Ejercicio eliminado exitosamente.", content = @Content)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEjercicio(@PathVariable String id) {

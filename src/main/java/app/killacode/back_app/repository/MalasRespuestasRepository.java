@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import app.killacode.back_app.model.MalasRespuestas;
 
-public interface MalasRespuestasRepository extends JpaRepository<MalasRespuestas, Long>{}
+public interface MalasRespuestasRepository extends JpaRepository<MalasRespuestas, Long>{
+
+}

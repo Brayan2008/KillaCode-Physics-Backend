@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import app.killacode.back_app.dto.SeccionRequest;
+import app.killacode.back_app.dto.SeccionResponse;
 import app.killacode.back_app.service.interfaces.SeccionService;
 
 import java.util.Optional;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Secciones", description = "Operaciones CRUD para las secciones")
@@ -33,7 +35,7 @@ public class SeccionController {
     private SeccionService seccionService;
 
     @Operation(summary = "Obtener una sección por ID", description = "Devuelve una sección específica por su ID")
-    @ApiResponse(responseCode = "200", description = "Sección encontrada", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Sección encontrada", content = @Content(schema = @Schema(implementation = SeccionResponse.class)))
     @GetMapping("/{id}")
     public ResponseEntity<?> getSeccion(@PathVariable String id) {
         return seccionService.get(id)
@@ -44,7 +46,7 @@ public class SeccionController {
     @Operation(summary = "Crear una sección", description = "Crea una nueva sección con los datos proporcionados")
     @ApiResponse(responseCode = "201", description = "Sección creada", content = @Content)
     @ApiResponse(responseCode = "400", description = "Error en el formato de la sección", content = @Content)
-    @PostMapping("/create")
+    @PostMapping("/crear")
     public ResponseEntity<?> create(@RequestBody SeccionRequest seccion) {
         if (seccionService.create(Optional.of(seccion))) {
 
@@ -60,7 +62,7 @@ public class SeccionController {
 
     @Operation(summary = "Actualizar una sección", description = "Actualiza los datos de una sección existente por su ID")
     @ApiResponse(responseCode = "200", description = "Sección actualizada", content = @Content)
-    @PutMapping("/update/{id}")
+    @PutMapping("/actualizar/{id}")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody SeccionRequest seccion) {
         boolean updated = seccionService.update(id, Optional.of(seccion));
         if (updated) {

@@ -3,6 +3,8 @@ package app.killacode.back_app.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import app.killacode.back_app.dto.SeccionResponse;
+import app.killacode.back_app.dto.TeoriaResponse;
 import app.killacode.back_app.model.Teoria;
 import app.killacode.back_app.service.interfaces.TeoriaService;
 
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Teorías", description = "Operaciones CRUD para la teoría")
@@ -33,7 +37,7 @@ public class TeoriaController {
     private TeoriaService teoriaService;
 
     @Operation(summary = "Obtener teoría por ID", description = "Devuelve la teoría correspondiente a un tema por su ID")
-    @ApiResponse(responseCode = "200", description = "Teoría encontrada", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Teoría encontrada", content = @Content(schema = @Schema(implementation = TeoriaResponse.class)))
     @GetMapping("/{id}")
     public ResponseEntity<?> getTeoria(@PathVariable String id) {
         return teoriaService.get(id)
@@ -42,7 +46,7 @@ public class TeoriaController {
     }
 
     @Operation(summary = "Obtener secciones de teoría", description = "Devuelve las secciones de una teoría por su ID")
-    @ApiResponse(responseCode = "200", description = "Secciones encontradas", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Secciones encontradas", content = @Content(array = @ArraySchema(schema = @Schema(implementation = SeccionResponse.class))))
     @GetMapping("/{id}/secciones")
     public ResponseEntity<?> getSecciones(@PathVariable String id) {
         return teoriaService.getSecciones(id).isPresent()

@@ -5,7 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.killacode.back_app.dto.UsuarioRequest;
+import app.killacode.back_app.dto.UsuarioDTORequest.UsuarioRequest;
+import app.killacode.back_app.dto.UsuarioDTORequest.UsuarioUpdateRequest;
 import app.killacode.back_app.dto.UsuarioResponse;
 import app.killacode.back_app.model.Dias;
 import app.killacode.back_app.model.Puntuacion_Semanal;
@@ -54,7 +55,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public boolean update(long id, Optional<UsuarioRequest> req) {
+    public boolean update(long id, Optional<UsuarioUpdateRequest> req) {
         if (req.isPresent() && usuarioRepository.existsById(id)) {
             Usuario u = usuarioRepository.findById(id).get();
             if (req.get().correo() != null)

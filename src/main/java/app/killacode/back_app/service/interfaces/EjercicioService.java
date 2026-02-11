@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import app.killacode.back_app.dto.EjercicioRequest;
+import app.killacode.back_app.dto.EjercicioDTO.*;
 import app.killacode.back_app.dto.EjercicioResponse;
 import app.killacode.back_app.model.Ejercicio;
 
@@ -16,7 +16,7 @@ public interface EjercicioService {
 
     Map<Boolean, Optional<Ejercicio>> create(Optional<EjercicioRequest> obj);
 
-    boolean update(String id, Optional<EjercicioRequest> obj);
+    boolean update(String id, Optional<EjercicioUpdateRequest> obj) throws RuntimeException;
 
     boolean delete(String id);
 

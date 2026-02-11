@@ -34,7 +34,7 @@ public class NivelController {
     private NivelService nivelService;
 
     @Operation(summary = "Obtener un nivel por su ID", description = "Devuelve un nivel específico por su ID")
-    @ApiResponse(responseCode = "200", description = "Nivel encontrado", content = @Content)
+    @ApiResponse(responseCode = "200", description = "Nivel encontrado")
     @GetMapping("/{id}")
     public ResponseEntity<NivelResponse> getNivel(@PathVariable String id) {
         return nivelService.get(id)

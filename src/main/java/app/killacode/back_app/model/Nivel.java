@@ -21,6 +21,7 @@ public class Nivel {
     @Id
     private String id_nivel;
     
+    // true: práctica, false: teoría
     @Column
     private boolean tipo;
     
