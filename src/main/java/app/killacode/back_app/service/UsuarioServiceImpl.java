@@ -11,7 +11,7 @@ import app.killacode.back_app.dto.UsuarioResponse;
 import app.killacode.back_app.model.Dias;
 import app.killacode.back_app.model.Puntuacion_Semanal;
 import app.killacode.back_app.model.Usuario;
-import app.killacode.back_app.repository.PuntacionRepository;
+import app.killacode.back_app.repository.PuntuacionRepository;
 import app.killacode.back_app.repository.TemaRepository;
 import app.killacode.back_app.repository.UsuarioRepository;
 import app.killacode.back_app.service.interfaces.UsuarioService;
@@ -25,7 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PuntacionRepository puntuacionRepo;
+    private PuntuacionRepository puntuacionRepo;
 
     @Autowired
     private TemaRepository temaRepo;
@@ -73,13 +73,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public boolean asignarTema(long id, String temaId) {
-        if (usuarioRepository.existsById(id) && temaRepo.existsById(temaId)) {
-            Usuario u = usuarioRepository.findById(id).get();
-            u.getTemas().add(temaRepo.findById(temaId).get());
-            usuarioRepository.save(u);
-            return true;
+        var user = usuarioRepository.findById(id).orElse(null);
+        var tema = temaRepo.findById(temaId).orElse(null);
+
+        if (user == null || tema == null) {
+            return false;
         }
-        return false;
+        user.getTemas().add(tema);
+        usuarioRepository.save(user);
+        return true;
     }
 
     @Override

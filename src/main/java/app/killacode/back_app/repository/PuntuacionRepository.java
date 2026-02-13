@@ -12,7 +12,7 @@ import app.killacode.back_app.model.Puntuacion_Semanal;
 import app.killacode.back_app.model.Usuario;
 import jakarta.transaction.Transactional;
 
-public interface PuntacionRepository extends JpaRepository<Puntuacion_Semanal, Long> {
+public interface PuntuacionRepository extends JpaRepository<Puntuacion_Semanal, Long> {
     
     //No usado
     @Query("SELECT p FROM Puntuacion_Semanal p JOIN p.id_usuario u WHERE u.id = :id_user AND p.dias = :dias")

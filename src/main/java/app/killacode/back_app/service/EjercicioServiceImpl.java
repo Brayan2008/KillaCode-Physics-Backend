@@ -11,7 +11,6 @@ import app.killacode.back_app.dto.EjercicioDTO.*;
 import app.killacode.back_app.dto.EjercicioResponse;
 import app.killacode.back_app.model.Ejercicio;
 import app.killacode.back_app.repository.EjercicioRepository;
-import app.killacode.back_app.repository.MalasRespuestasRepository;
 import app.killacode.back_app.repository.PracticaRepository;
 import app.killacode.back_app.service.interfaces.EjercicioService;
 import jakarta.transaction.Transactional;

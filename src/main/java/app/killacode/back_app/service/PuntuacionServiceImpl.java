@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import app.killacode.back_app.dto.PuntuacionRequest;
 import app.killacode.back_app.dto.PuntuacionResponse;
 import app.killacode.back_app.model.Usuario;
-import app.killacode.back_app.repository.PuntacionRepository;
+import app.killacode.back_app.repository.PuntuacionRepository;
 import app.killacode.back_app.repository.UsuarioRepository;
 import app.killacode.back_app.service.interfaces.PuntuacionService;
 
@@ -17,7 +17,7 @@ import app.killacode.back_app.service.interfaces.PuntuacionService;
 public class PuntuacionServiceImpl implements PuntuacionService {
 
     @Autowired
-    private PuntacionRepository puntacionRepository;
+    private PuntuacionRepository puntacionRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;

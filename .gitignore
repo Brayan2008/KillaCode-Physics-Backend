@@ -1,10 +1,11 @@
 /environment/  
 /target/
 /target/classes/
-.vscode/
+.vscode/*
 .mvn/
 .m2/
 Peticiones-HTTP-Cartero/
+/target/classes/application.properties
 
 # Compiled class file
 *.class
