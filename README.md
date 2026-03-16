@@ -112,6 +112,6 @@ Si deseas levantar el proyecto y probar los endpoints, levanta el proyecto e ing
       
       - Primero crea un tema en el endpoint "*/tema/crear*".
       
-      - Cuando ya tengas creada una practica o una teoría, ya puedes crear un nivel. Para ello, relaciona el id de uno de los dos e indica el tipo de nivel (false: practica, true: teoria). 
+      - Cuando ya tengas creada una practica o una teoría, ya puedes crear un nivel. Para ello, relaciona el id de uno de los dos e indica el tipo de nivel (true: practica, false: teoria). 
 
         > No olvides relacionar el nivel con el tema creado en el primer paso

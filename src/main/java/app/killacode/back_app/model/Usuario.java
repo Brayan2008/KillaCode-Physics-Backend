@@ -2,7 +2,9 @@ package app.killacode.back_app.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 public class Usuario {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id_usuario;
@@ -48,12 +50,15 @@ public class Usuario {
     @Column
     private int puntaje;
 
-    @OneToMany(mappedBy = "id_usuario" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id_usuario", cascade = CascadeType.ALL)
     private final List<Puntuacion_Semanal> puntuaciones = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "TemasxUsuario", joinColumns = @JoinColumn(name = "id_usuario"), inverseJoinColumns = @JoinColumn(name = "id_tema"))
     private final List<Tema> temas = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "RolesxUsuario", joinColumns = @JoinColumn(name = "id_usuario"), inverseJoinColumns = @JoinColumn(name = "id_rol"))
+    private final Set<Roles> roles = new HashSet<>();
+
 }
- 

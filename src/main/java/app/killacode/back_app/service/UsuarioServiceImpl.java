@@ -3,6 +3,7 @@ package app.killacode.back_app.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import app.killacode.back_app.dto.UsuarioDTORequest.UsuarioRequest;
@@ -10,8 +11,11 @@ import app.killacode.back_app.dto.UsuarioDTORequest.UsuarioUpdateRequest;
 import app.killacode.back_app.dto.UsuarioResponse;
 import app.killacode.back_app.model.Dias;
 import app.killacode.back_app.model.Puntuacion_Semanal;
+import app.killacode.back_app.model.RolEnum;
+import app.killacode.back_app.model.Roles;
 import app.killacode.back_app.model.Usuario;
 import app.killacode.back_app.repository.PuntuacionRepository;
+import app.killacode.back_app.repository.RolesRepository;
 import app.killacode.back_app.repository.TemaRepository;
 import app.killacode.back_app.repository.UsuarioRepository;
 import app.killacode.back_app.service.interfaces.UsuarioService;
@@ -22,10 +26,16 @@ import jakarta.transaction.Transactional;
 public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Autowired
     private PuntuacionRepository puntuacionRepo;
+
+    @Autowired
+    private RolesRepository rolesRepository;
 
     @Autowired
     private TemaRepository temaRepo;
@@ -39,8 +49,19 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Optional<UsuarioResponse> create(Optional<UsuarioRequest> req) {
         if (req.isPresent() && req.get().correo() != null && req.get().nombre() != null) {
             Usuario fetchuser = req.get().toUser();
+            Roles userRole = rolesRepository.findByRolName(RolEnum.USER)
+                .orElseGet(() -> {
+                Roles role = new Roles();
+                role.setRol_name(RolEnum.USER);
+                return rolesRepository.save(role);
+                });
+
+            fetchuser.getRoles().add(userRole);
             Dias[] dias = { Dias.DOMINGO, Dias.LUNES, Dias.MARTES, Dias.MIERCOLES, Dias.JUEVES, Dias.VIERNES,
                     Dias.SABADO };
+
+            // Encriptar la contraseña antes de guardar el usuario
+            fetchuser.setPassword(passwordEncoder.encode(req.get().password()));
 
             usuarioRepository.save(fetchuser);
            

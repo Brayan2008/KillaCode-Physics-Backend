@@ -22,12 +22,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import app.killacode.back_app.dto.UsuarioDTORequest.UsuarioRequest;
 import app.killacode.back_app.dto.UsuarioDTORequest.UsuarioUpdateRequest;
+import app.killacode.back_app.model.RolEnum;
+import app.killacode.back_app.model.Roles;
 import app.killacode.back_app.model.Tema;
 import app.killacode.back_app.model.Usuario;
 import app.killacode.back_app.repository.PuntuacionRepository;
+import app.killacode.back_app.repository.RolesRepository;
 import app.killacode.back_app.repository.TemaRepository;
 import app.killacode.back_app.repository.UsuarioRepository;
-import app.killacode.back_app.service.UsuarioServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UsuarioServiceTest {
@@ -40,6 +42,9 @@ public class UsuarioServiceTest {
 
     @Mock
     PuntuacionRepository puntuacionRepo;
+
+    @Mock
+    RolesRepository rolesRepository;
 
     @InjectMocks
     UsuarioServiceImpl usuarioService;
@@ -69,6 +74,10 @@ public class UsuarioServiceTest {
     @Test
     void testCreate() {
         UsuarioRequest request = new UsuarioRequest("test@mail.com", "123456", "Brayan", 20);
+        Roles userRole = new Roles();
+        userRole.setRol_name(RolEnum.USER);
+
+        when(rolesRepository.findByRolName(RolEnum.USER)).thenReturn(Optional.of(userRole));
 
         MockHttpServletRequest httpRequest = new MockHttpServletRequest();
         httpRequest.setScheme("http");
@@ -79,6 +88,7 @@ public class UsuarioServiceTest {
         var result = usuarioService.create(Optional.of(request));
 
         assertTrue(result.isPresent());
+        assertEquals(RolEnum.USER, ((Roles) result.get().roles().toArray()[0]).getRol_name());
         assertEquals("Brayan", result.get().nombre());
         assertEquals("test@mail.com", result.get().correo());
 
