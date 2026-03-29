@@ -85,7 +85,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 u.setNombre(req.get().nombre());
             // password puede ser null, pero si viene lo actualizamos
             if (req.get().password() != null)
-                u.setPassword(req.get().password());
+                u.setPassword(passwordEncoder.encode(req.get().password()));
             usuarioRepository.save(u);
             return true;
         }

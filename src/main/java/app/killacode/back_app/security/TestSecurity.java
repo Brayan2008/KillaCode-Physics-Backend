@@ -7,11 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -19,34 +16,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/test")
 public class TestSecurity {
 
-    @Autowired
-    private SessionRegistry session;
-
     @GetMapping("/session")
-    public ResponseEntity<?> getSesion() {
-
-        String id = "";
-
-        User user = null;
-
-        List<Object> sesiones = session.getAllPrincipals();
-
-        for (Object object : sesiones) {
-            if (object instanceof User) {
-                user = (User) object;
-                
-            }
-            
-            List<SessionInformation> infoSesion = session.getAllSessions(object, false);
-
-            for (SessionInformation info : infoSesion) {
-                id = info.getSessionId();
-            }
-        }
+    public ResponseEntity<?> getSesion(Authentication authentication) {
 
         Map<String, Object> response = new HashMap<>();
-        response.put("Session", user);
-        response.put("id", id);
+        if (authentication == null) {
+            response.put("session", null);
+            response.put("authenticated", false);
+            response.put("authorities", List.of());
+            return ResponseEntity.ok(response);
+        }
+
+        response.put("session", authentication.getName());
+        response.put("authenticated", authentication.isAuthenticated());
+        response.put("authorities", authentication.getAuthorities());
 
         return ResponseEntity.ok(response);
     }
